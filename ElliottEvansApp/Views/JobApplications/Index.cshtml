@@ -1,0 +1,66 @@
+﻿@model IEnumerable<ElliottEvansApp.Models.JobApplicationsTracker>
+
+@{
+    ViewData["Title"] = "Job Applications";
+}
+
+<h1>Job Applications Tracker</h1>
+
+<div>
+    <form hx-post="@Url.Action("Create", "JobApplications")" hx-target="#jobApplicationsTable" hx-swap="beforeend">
+        <div class="form-group">
+            <label for="CompanyName">Company Name</label>
+            <input type="text" class="form-control" id="CompanyName" name="CompanyName" required />
+        </div>
+        <div class="form-group">
+            <label for="Position">Position</label>
+            <input type="text" class="form-control" id="Position" name="Position" required />
+        </div>
+        <div class="form-group">
+            <label for="ClosingDate">Closing Date</label>
+            <input type="date" class="form-control" id="ClosingDate" name="ClosingDate" required />
+        </div>
+        <div class="form-group">
+            <label for="WhereApplied">Where Applied</label>
+            <input type="text" class="form-control" id="WhereApplied" name="WhereApplied" required />
+        </div>
+        <div class="form-group">
+            <label for="Status">Status</label>
+            <input type="text" class="form-control" id="Status" name="Status" required />
+        </div>
+        <div class="form-group">
+            <label for="Notes">Notes</label>
+            <textarea class="form-control" id="Notes" name="Notes" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Job Application</button>
+    </form>
+</div>
+
+<h2>Previous Job Applications</h2>
+
+<table class="table" id="jobApplicationsTable">
+    <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>Position</th>
+            <th>Closing Date</th>
+            <th>Where Applied</th>
+            <th>Status</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CompanyName</td>
+                <td>@item.Position</td>
+                <td>@item.ClosingDate</td>
+                <td>@item.WhereApplied</td>
+                <td>@item.Status</td>
+                <td>@item.Notes</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

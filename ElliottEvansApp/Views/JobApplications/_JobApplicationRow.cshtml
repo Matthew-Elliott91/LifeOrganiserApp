@@ -1,0 +1,10 @@
+﻿@model ElliottEvansApp.Models.JobApplicationsTracker
+
+<tr>
+	<td>@Model.CompanyName</td>
+	<td>@Model.Position</td>
+	<td>@Model.ClosingDate.ToShortDateString()</td>
+	<td>@Model.WhereApplied</td>
+	<td>@Model.Status</td>
+	<td>@Model.Notes</td>
+</tr>

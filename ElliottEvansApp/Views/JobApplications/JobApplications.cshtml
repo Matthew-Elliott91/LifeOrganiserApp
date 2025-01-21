@@ -1,0 +1,47 @@
+﻿@model List<JobApplicationsTracker>
+
+<div class="container ml-n4">
+	<div class="table-responsive">
+		<a asp-action="Create" asp-controller="JobApplications" class="btn btn-primary">Add New Job Application</a>
+		<table class="table table-striped table-hover">
+			<thead>
+			<th>Company</th>
+			<th>Job Title</th>
+			<th>Location</th>
+			<th>Date Applied</th>
+			<th>Closing Date</th>
+			<th>Application Platform</th>
+			<th>Job Specification</th>
+			<th>Status</th>
+			<th>Notes</th>
+			<th></th>
+			</thead>
+			<tbody>
+			@if (Model != null)
+			{
+				@foreach (var jobApplication in Model)
+				{
+					<tr>
+						<td>@jobApplication.CompanyName</td>
+						<td>@jobApplication.Position</td>
+						<td>@jobApplication.Location</td>
+						<td>@jobApplication.DateApplied</td>
+						<td>@jobApplication.ClosingDate</td>
+						<td>@jobApplication.ApplicationPlatform</td>
+						<td>@jobApplication.JobSpecification</td>
+						<td>@jobApplication.Status</td>
+						<td>@jobApplication.Notes</td>
+					</tr>
+				}
+			}
+			else
+			{
+				<tr>
+					<td colspan="10">No job applications found</td>
+				</tr>
+			}
+
+			</tbody>
+		</table>
+	</div>
+</div>

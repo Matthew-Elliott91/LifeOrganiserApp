@@ -15,22 +15,14 @@ namespace ElliottEvansApp.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> JobApplications()
         {
-            var jobApplications = await _context.JobApplicationsTrackers.ToListAsync();
-            return View(jobApplications);
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(JobApplicationsTracker jobApplication)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(jobApplication);
-                await _context.SaveChangesAsync();
-                return PartialView("_JobApplicationRow", jobApplication);
-            }
-            return BadRequest();
+            var jobApplications = _context.JobApplicationsTrackers.ToList();
+           
+            return View();
         }
     }
+
+
 }

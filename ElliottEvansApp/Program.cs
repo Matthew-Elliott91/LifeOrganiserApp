@@ -32,7 +32,7 @@ namespace ElliottEvansApp
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=JobApplications}/{action=Index}/{id?}")
+                pattern: "{controller=JobApplications}/{action=JobApplications}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

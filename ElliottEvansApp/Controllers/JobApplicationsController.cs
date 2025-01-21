@@ -17,10 +17,31 @@ namespace ElliottEvansApp.Controllers
             _webHost = webHost;
         }
 
-        public async Task<IActionResult> JobApplications()
+        public async Task<IActionResult> JobApplications(string sortOrder)
         {
 
             var jobApplications = await _context.JobApplicationsTrackers.ToListAsync();
+            ViewData["CompanySortParam"] = String.IsNullOrEmpty(sortOrder) ? "company_desc" : "";
+            ViewData["ClosingDateSortParam"] = sortOrder == "date_asc" ? "date_desc" : "date_asc";
+            ViewData["StatusSortParam"] = String.IsNullOrEmpty(sortOrder) ? "status_desc" : "";
+
+            //Sorting logic
+            switch (sortOrder)
+            {
+                case "company_desc":
+                    jobApplications = jobApplications.OrderByDescending(e => e.CompanyName).ToList();
+                    break;
+                case "status_desc":
+                    jobApplications = jobApplications.OrderByDescending(e => e.Status).ToList();
+                    break;
+                case "date_asc":
+                    jobApplications = jobApplications.OrderBy(e => e.ClosingDate).ToList();
+                    break;
+                default:
+                    jobApplications = jobApplications.OrderBy(e => e.CompanyName).ToList();
+                    break;
+
+            } 
 
             return View(jobApplications);
         }

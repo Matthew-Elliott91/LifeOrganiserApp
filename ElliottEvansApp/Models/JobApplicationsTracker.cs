@@ -1,17 +1,33 @@
-﻿namespace ElliottEvansApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
+
+namespace ElliottEvansApp.Models
 {
     public class JobApplicationsTracker
     {
-        public required int Id { get; set; }
-        public required string CompanyName { get; set; }
-        public required string Position { get; set; }
-        public required string Location { get; set; }
-        public required DateTime DateApplied { get; set; } 
-        public required DateTime ClosingDate { get; set; }
-        public required string ApplicationPlatform { get; set; }
-        public required string Status { get; set; }
-        public string JobSpecification { get; set; }
-        public required string Notes { get; set; }
+        public int Id { get; set; }
+
+        [Required] public string CompanyName { get; set; }
+
+        [Required] public string Position { get; set; }
+
+        [Required] public string Location { get; set; }
+
+        [Required] public DateTime DateApplied { get; set; }
+
+        [Required] public DateTime ClosingDate { get; set; }
+
+        [Required] public string ApplicationPlatform { get; set; }
+
+        [Required] public string Status { get; set; }
+
+        public string? ApplicationURL { get; set; }
+
+        public string? JobSpecification { get; set; }
+
+        public string? Notes { get; set; }
+
 
     }
 }

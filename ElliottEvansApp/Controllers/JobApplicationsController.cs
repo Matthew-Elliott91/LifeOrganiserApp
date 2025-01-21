@@ -9,20 +9,179 @@ namespace ElliottEvansApp.Controllers
     public class JobApplicationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHost;
 
-        public JobApplicationsController(ApplicationDbContext context)
+        public JobApplicationsController(ApplicationDbContext context, IWebHostEnvironment webHost)
         {
             _context = context;
+            _webHost = webHost;
         }
 
         public async Task<IActionResult> JobApplications()
         {
 
-            var jobApplications = _context.JobApplicationsTrackers.ToList();
-           
+            var jobApplications = await _context.JobApplicationsTrackers.ToListAsync();
+
+            return View(jobApplications);
+        }
+
+        public IActionResult Create()
+        {
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> Create(JobApplicationsTracker jobApplication, IFormFile? file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                string uploadsFolder = Path.Combine(_webHost.WebRootPath, "uploads/JobSpecifications");
+                string fileName = Path.GetFileName(file.FileName);
+                string fileSavePath = Path.Combine(uploadsFolder, fileName);
+
+                using (FileStream stream = new FileStream(fileSavePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Store the file path in the JobSpecification property
+                jobApplication.JobSpecification = Path.Combine("uploads/JobSpecifications", fileName);
+            }
+            else
+            {
+                // Optionally, you can set a default value or leave it as null
+                jobApplication.JobSpecification = null;
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Add(jobApplication);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(JobApplications));
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception (you can use a logging framework here)
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else
+            {
+                // Log the validation errors
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"Property: {state.Key}, Error: {error.ErrorMessage}");
+                    }
+                }
+            }
+
+            return View(jobApplication);
+        }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            JobApplicationsTracker jobApplication = _context.JobApplicationsTrackers.Find(id);
+            if (jobApplication == null)
+            {
+                return RedirectToAction(nameof(JobApplications));
+            }
+            else
+            {
+                _context.JobApplicationsTrackers.Remove(jobApplication);
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(JobApplications));
+        }
+
+        public IActionResult Edit(int id)
+        {
+            JobApplicationsTracker jobApplication = _context.JobApplicationsTrackers.Find(id);
+            return View(jobApplication);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(JobApplicationsTracker jobApplication, IFormFile? file)
+        {
+            
+            {
+                if (file != null && file.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(_webHost.WebRootPath, "uploads/JobSpecifications");
+                    string fileName = Path.GetFileName(file.FileName);
+                    string fileSavePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (FileStream stream = new FileStream(fileSavePath, FileMode.Create))
+                    {
+                         file.CopyToAsync(stream);
+                    }
+
+                    // Store the file path in the JobSpecification property
+                    jobApplication.JobSpecification = Path.Combine("uploads/JobSpecifications", fileName);
+                }
+                else
+                {
+                    // Optionally, you can set a default value or leave it as null
+                    jobApplication.JobSpecification = null;
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Update(jobApplication);
+                        _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(JobApplications));
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the exception (you can use a logging framework here)
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                else
+                {
+                    // Log the validation errors
+                    foreach (var state in ModelState)
+                    {
+                        foreach (var error in state.Value.Errors)
+                        {
+                            Console.WriteLine($"Property: {state.Key}, Error: {error.ErrorMessage}");
+                        }
+                    }
+                }
+
+                return View(jobApplication);
+            }
+        }
+
+
+        public IActionResult Download(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return NotFound();
+            }
+
+            var fullPath = Path.Combine(_webHost.WebRootPath, filePath);
+            if (!System.IO.File.Exists(fullPath))
+            {
+                return NotFound();
+            }
+
+            var fileBytes = System.IO.File.ReadAllBytes(fullPath);
+            var fileName = Path.GetFileName(fullPath);
+            return File(fileBytes, "application/octet-stream", fileName);
+        }
+
+
+
+
+
+
+
+
     }
-
-
 }

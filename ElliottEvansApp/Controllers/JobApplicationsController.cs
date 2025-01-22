@@ -55,6 +55,13 @@ namespace ElliottEvansApp.Controllers
         {
             if (file != null && file.Length > 0)
             {
+                // Check if the file size exceeds 300KB
+                if (file.Length > 600 * 1024)
+                {
+                    ModelState.AddModelError("JobSpecification", "File size exceeds the 600KB limit.");
+                    return View(jobApplication);
+                }
+
                 string uploadsFolder = Path.Combine(_webHost.WebRootPath, "uploads/JobSpecifications");
                 string fileName = Path.GetFileName(file.FileName);
                 string fileSavePath = Path.Combine(uploadsFolder, fileName);
@@ -101,6 +108,7 @@ namespace ElliottEvansApp.Controllers
 
             return View(jobApplication);
         }
+
         [HttpPost]
         public IActionResult Delete(int id)
         {
